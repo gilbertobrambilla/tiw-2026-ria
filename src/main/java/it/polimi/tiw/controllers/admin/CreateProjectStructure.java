@@ -58,7 +58,7 @@ public class CreateProjectStructure extends HttpServlet {
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(projectId);
+            response.getWriter().print(projectId);
         } catch (SQLException e) {
             sendTextError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database failure occurred during project structure creation");
         }
