@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import it.polimi.tiw.beans.UserLogin;
 import it.polimi.tiw.beans.UserRole;
-import it.polimi.tiw.beans.creation.ProjectStructureBlueprint;
-import it.polimi.tiw.beans.creation.TaskBlueprint;
-import it.polimi.tiw.beans.creation.WPBlueprint;
+import it.polimi.tiw.beans.admin.request.ProjectStructureBlueprint;
+import it.polimi.tiw.beans.admin.request.TaskBlueprint;
+import it.polimi.tiw.beans.admin.request.WPBlueprint;
 import it.polimi.tiw.dao.ProjectDAO;
 import it.polimi.tiw.dao.TaskDAO;
 import it.polimi.tiw.dao.UserDAO;
@@ -49,7 +49,7 @@ public class CreateProjectStructure extends HttpServlet {
 
         try (Connection connection = DatabaseConnection.getInstance(getServletContext()).getConnection()) {
             UserDAO userDAO = new UserDAO(connection);
-            if (userDAO.getRoleByUser(projectStructure.getManagedBy()) != UserRole.technical) {
+            if (userDAO.getUserByIdAndRole(projectStructure.getManagedBy(), UserRole.technical) == null) {
                 sendTextError(response, HttpServletResponse.SC_BAD_REQUEST, "Selected manager must be a technical user");
                 return;
             }

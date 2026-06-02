@@ -1,9 +1,11 @@
 package it.polimi.tiw.controllers.admin;
 
 import com.google.gson.Gson;
-import it.polimi.tiw.beans.*;
+import it.polimi.tiw.beans.Project;
+import it.polimi.tiw.beans.UserLogin;
+import it.polimi.tiw.beans.admin.AdminProjectStructureResponse;
+import it.polimi.tiw.dao.AdminDAO;
 import it.polimi.tiw.dao.ProjectDAO;
-import it.polimi.tiw.dao.ProjectReportDAO;
 import it.polimi.tiw.utils.DatabaseConnection;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -36,7 +38,7 @@ public class GetProjectStructure extends HttpServlet {
 
         try (Connection connection = DatabaseConnection.getInstance(getServletContext()).getConnection()) {
             ProjectDAO projectDAO = new ProjectDAO(connection);
-            ProjectReportDAO projectReportDAO = new ProjectReportDAO(connection);
+            AdminDAO adminDAO = new AdminDAO(connection);
 
             Project project = projectDAO.getProjectByIdAndCreator(projectId, loggedInUser.getId());
             if (project == null) {
@@ -44,7 +46,7 @@ public class GetProjectStructure extends HttpServlet {
                 return;
             }
 
-            ProjectStructureReport report = projectReportDAO.getProjectStructureReportByProjectAndCreator(project, loggedInUser.getId());
+            AdminProjectStructureResponse report = adminDAO.getProjectStructure(project);
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json;charset=UTF-8");
