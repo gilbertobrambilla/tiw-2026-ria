@@ -6,7 +6,7 @@
 
     <context-param>
         <param-name>dbUrl</param-name>
-        <param-value>jdbc:mysql://localhost:3306/tiw?serverTimezone=UTC</param-value>
+        <param-value>jdbc:mysql://localhost:3306/tiw-ria?serverTimezone=UTC</param-value>
     </context-param>
     <context-param>
         <param-name>dbUser</param-name>
