@@ -1,23 +1,24 @@
 package it.polimi.tiw.beans.manager;
 
 import it.polimi.tiw.beans.Task;
+import it.polimi.tiw.beans.manager.monthly.TaskWorkedHoursMonth;
 
-import java.util.Map;
+import java.util.List;
 
 public class ManagerCollaboratorTaskResponse {
     private final Task task;
-    private final Map<Integer, Integer> workedHoursByMonth;
+    private final List<TaskWorkedHoursMonth> months;
 
-    public ManagerCollaboratorTaskResponse(Task task, Map<Integer, Integer> workedHoursByMonth) {
+    public ManagerCollaboratorTaskResponse(Task task, List<TaskWorkedHoursMonth> months) {
         this.task = task;
-        this.workedHoursByMonth = workedHoursByMonth;
+        this.months = months;
     }
 
     public Task getTask() {
         return task;
     }
 
-    public Map<Integer, Integer> getWorkedHoursByMonth() {
-        return workedHoursByMonth;
+    public List<TaskWorkedHoursMonth> getMonths() {
+        return months;
     }
 }

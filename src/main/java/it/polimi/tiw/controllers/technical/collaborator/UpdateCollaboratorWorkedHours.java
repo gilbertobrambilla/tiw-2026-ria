@@ -31,9 +31,9 @@ public class UpdateCollaboratorWorkedHours extends HttpServlet {
         String monthParam = request.getParameter("month");
         String workedHoursParam = request.getParameter("workedHours");
 
-        if (taskIdParam == null || taskIdParam.isEmpty() ||
-                monthParam == null || monthParam.isEmpty() ||
-                workedHoursParam == null || workedHoursParam.isEmpty()) {
+        if (taskIdParam == null || taskIdParam.trim().isEmpty() ||
+                monthParam == null || monthParam.trim().isEmpty() ||
+                workedHoursParam == null || workedHoursParam.trim().isEmpty()) {
             sendTextError(response, HttpServletResponse.SC_BAD_REQUEST, "Missing worked-hours update parameters");
             return;
         }
@@ -43,9 +43,9 @@ public class UpdateCollaboratorWorkedHours extends HttpServlet {
         int workedHours;
 
         try {
-            taskId = Integer.parseInt(taskIdParam);
-            month = Integer.parseInt(monthParam);
-            workedHours = Integer.parseInt(workedHoursParam);
+            taskId = Integer.parseInt(taskIdParam.trim());
+            month = Integer.parseInt(monthParam.trim());
+            workedHours = Integer.parseInt(workedHoursParam.trim());
         } catch (NumberFormatException e) {
             sendTextError(response, HttpServletResponse.SC_BAD_REQUEST, "Worked-hours update parameters must be integers");
             return;
@@ -71,7 +71,9 @@ public class UpdateCollaboratorWorkedHours extends HttpServlet {
             }
 
             collaboratorDAO.saveCollaboratorWorkedHours(taskId, loggedInUser.getId(), month, workedHours);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("Worked hours updated");
         } catch (SQLException e) {
             sendTextError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database failure occurred while updating worked hours");
         }

@@ -1,6 +1,7 @@
 package it.polimi.tiw.controllers.technical.manager;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.tiw.beans.Project;
 import it.polimi.tiw.beans.ProjectStatus;
 import it.polimi.tiw.beans.UserLogin;
@@ -57,7 +58,8 @@ public class GetProjectMonitoring extends HttpServlet {
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(new Gson().toJson(report));
+            Gson gson = new GsonBuilder().serializeNulls().create();
+            response.getWriter().write(gson.toJson(report));
         } catch (SQLException e) {
             sendTextError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database failure occurred while retrieving project report");
         }

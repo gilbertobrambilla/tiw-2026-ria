@@ -5,6 +5,7 @@ import it.polimi.tiw.beans.ProjectStatus;
 import it.polimi.tiw.beans.Task;
 import it.polimi.tiw.beans.UserLogin;
 import it.polimi.tiw.beans.UserRole;
+import it.polimi.tiw.beans.manager.monthly.ExpectedHoursMonth;
 import it.polimi.tiw.dao.TaskDAO;
 import it.polimi.tiw.dao.TaskHoursDAO;
 import it.polimi.tiw.dao.UserDAO;
@@ -22,8 +23,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Set;
 
 @WebServlet("/technical/manager/save-task-assignment")
@@ -54,14 +53,14 @@ public class SaveTaskAssignment extends HttpServlet {
             }
 
             List<String> errors = new ArrayList<>();
-            Map<Integer, Integer> expectedHoursByMonth = parseExpectedHours(request, managedTask.getTask(), errors);
+            List<ExpectedHoursMonth> expectedHours = parseExpectedHours(request, managedTask.getTask(), errors);
             List<Integer> collaboratorIds = parseCollaboratorIds(request, loggedInUser.getId(), userDAO, errors);
             if (!errors.isEmpty()) {
                 sendTextError(response, HttpServletResponse.SC_BAD_REQUEST, String.join("\n", errors));
                 return;
             }
 
-            saveTaskAssignment(connection, taskDAO, taskHoursDAO, taskId, expectedHoursByMonth, collaboratorIds);
+            saveTaskAssignment(connection, taskDAO, taskHoursDAO, taskId, expectedHours, collaboratorIds);
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("text/plain;charset=UTF-8");
@@ -71,13 +70,10 @@ public class SaveTaskAssignment extends HttpServlet {
         }
     }
 
-    private Map<Integer, Integer> parseExpectedHours(HttpServletRequest request, Task task, List<String> errors) {
-        Map<Integer, Integer> expectedHoursByMonth = new HashMap<>();
+    private List<ExpectedHoursMonth> parseExpectedHours(HttpServletRequest request, Task task, List<String> errors) {
+        List<ExpectedHoursMonth> expectedHours = new ArrayList<>();
         for (int month = task.getStartMonth(); month <= task.getEndMonth(); month++) {
-            String value = request.getParameter("hours_" + month);
-            if (value == null) {
-                value = request.getParameter("expectedHours_" + month);
-            }
+            String value = request.getParameter("expectedHours_" + month);
 
             if (value == null || value.trim().isEmpty()) {
                 errors.add("Expected hours for month M" + month + " are required");
@@ -85,17 +81,17 @@ public class SaveTaskAssignment extends HttpServlet {
             }
 
             try {
-                int hours = Integer.parseInt(value);
+                int hours = Integer.parseInt(value.trim());
                 if (hours < 0) {
                     errors.add("Expected hours for month M" + month + " cannot be negative");
                 } else {
-                    expectedHoursByMonth.put(month, hours);
+                    expectedHours.add(new ExpectedHoursMonth(month, hours));
                 }
             } catch (NumberFormatException e) {
                 errors.add("Expected hours for month M" + month + " must be an integer");
             }
         }
-        return expectedHoursByMonth;
+        return expectedHours;
     }
 
     private List<Integer> parseCollaboratorIds(HttpServletRequest request, int managerId, UserDAO userDAO, List<String> errors) throws SQLException {
@@ -128,13 +124,13 @@ public class SaveTaskAssignment extends HttpServlet {
     }
 
     private void saveTaskAssignment(Connection connection, TaskDAO taskDAO, TaskHoursDAO taskHoursDAO, int taskId,
-                                    Map<Integer, Integer> expectedHoursByMonth, List<Integer> collaboratorIds) throws SQLException {
+                                    List<ExpectedHoursMonth> expectedHours, List<Integer> collaboratorIds) throws SQLException {
         boolean previousAutoCommit = connection.getAutoCommit();
         connection.setAutoCommit(false);
 
         try {
-            for (Map.Entry<Integer, Integer> expectedHours : expectedHoursByMonth.entrySet()) {
-                taskHoursDAO.saveExpectedHours(taskId, expectedHours.getKey(), expectedHours.getValue());
+            for (ExpectedHoursMonth expectedHour : expectedHours) {
+                taskHoursDAO.saveExpectedHours(taskId, expectedHour.getMonth(), expectedHour.getExpectedHours());
             }
 
             taskDAO.deleteWorkersByTask(taskId);
@@ -156,7 +152,7 @@ public class SaveTaskAssignment extends HttpServlet {
         if (value == null || value.trim().isEmpty()) {
             throw new NumberFormatException();
         }
-        return Integer.parseInt(value);
+        return Integer.parseInt(value.trim());
     }
 
     private void sendTextError(HttpServletResponse response, int status, String message) throws IOException {

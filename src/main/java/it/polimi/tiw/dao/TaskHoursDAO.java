@@ -1,11 +1,14 @@
 package it.polimi.tiw.dao;
 
+import it.polimi.tiw.beans.Task;
+import it.polimi.tiw.beans.manager.monthly.ExpectedHoursMonth;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TaskHoursDAO {
     private final Connection connection;
@@ -49,20 +52,37 @@ public class TaskHoursDAO {
         }
     }
 
-    public Map<Integer, Integer> getExpectedHoursByTask(int taskId) throws SQLException {
-        Map<Integer, Integer> expectedHours = new HashMap<>();
+    public List<ExpectedHoursMonth> getExpectedHoursByTask(Task task) throws SQLException {
+        List<ExpectedHoursMonth> expectedHours = initializeExpectedHours(task.getStartMonth(), task.getEndMonth());
         String query = "SELECT month_index, hours FROM task_expected_hours WHERE task_id = ? ORDER BY month_index ASC";
 
-        // monthly expected hours are extracted and mapped
+        // existing monthly expected hours are applied over the full task month range
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, taskId);
+            stmt.setInt(1, task.getId());
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    expectedHours.put(rs.getInt("month_index"), rs.getInt("hours"));
+                    setExpectedHours(expectedHours, task.getStartMonth(), task.getEndMonth(),
+                            rs.getInt("month_index"), rs.getInt("hours"));
                 }
             }
         }
         return expectedHours;
+    }
+
+    private List<ExpectedHoursMonth> initializeExpectedHours(int startMonth, int endMonth) {
+        List<ExpectedHoursMonth> expectedHours = new ArrayList<>();
+        for (int month = startMonth; month <= endMonth; month++) {
+            expectedHours.add(new ExpectedHoursMonth(month, null));
+        }
+        return expectedHours;
+    }
+
+    private void setExpectedHours(List<ExpectedHoursMonth> expectedHours, int startMonth, int endMonth,
+                                  int month, int hours) {
+        if (month < startMonth || month > endMonth) {
+            return;
+        }
+        expectedHours.set(month - startMonth, new ExpectedHoursMonth(month, hours));
     }
 
 }

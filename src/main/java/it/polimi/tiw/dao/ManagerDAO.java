@@ -12,13 +12,16 @@ import it.polimi.tiw.beans.manager.ManagerCollaboratorWPResponse;
 import it.polimi.tiw.beans.manager.ManagerProjectMonitoringResponse;
 import it.polimi.tiw.beans.manager.ManagerTaskMonitoringResponse;
 import it.polimi.tiw.beans.manager.ManagerWPMonitoringResponse;
+import it.polimi.tiw.beans.manager.monthly.TaskHoursMonth;
+import it.polimi.tiw.beans.manager.monthly.TaskWorkedHoursMonth;
+import it.polimi.tiw.beans.manager.monthly.WPHoursMonth;
+import it.polimi.tiw.beans.manager.monthly.WPWorkedHoursMonth;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,13 +77,9 @@ public class ManagerDAO {
 
                     int monthIndex = result.getInt("month_index");
                     if (!result.wasNull()) {
-                        int expected = result.getInt("expected_hours");
+                        Integer expected = getNullableInt(result, "expected_hours");
                         int worked = result.getInt("worked_hours");
-
-                        taskData.expectedHoursByMonth.put(monthIndex, expected);
-                        taskData.workedHoursByMonth.put(monthIndex, worked);
-                        wpData.totalExpectedHoursByMonth.merge(monthIndex, expected, Integer::sum);
-                        wpData.totalWorkedHoursByMonth.merge(monthIndex, worked, Integer::sum);
+                        updateTaskHoursMonth(taskData.months, taskData.task, monthIndex, expected, worked);
                     }
                 }
             }
@@ -92,15 +91,13 @@ public class ManagerDAO {
             for (TaskMonitoringData taskData : wpData.taskDataById.values()) {
                 tasks.add(new ManagerTaskMonitoringResponse(
                         taskData.task,
-                        taskData.expectedHoursByMonth,
-                        taskData.workedHoursByMonth
+                        taskData.months
                 ));
             }
 
             wpList.add(new ManagerWPMonitoringResponse(
                     wpData.wp,
-                    wpData.totalExpectedHoursByMonth,
-                    wpData.totalWorkedHoursByMonth,
+                    buildWPHoursMonths(wpData.wp, wpData.taskDataById.values()),
                     tasks
             ));
         }
@@ -180,8 +177,7 @@ public class ManagerDAO {
                     int monthIndex = result.getInt("month_index");
                     if (!result.wasNull()) {
                         int worked = result.getInt("worked_hours");
-                        taskData.workedHoursByMonth.put(monthIndex, worked);
-                        wpData.totalWorkedHoursByMonth.merge(monthIndex, worked, Integer::sum);
+                        updateTaskWorkedHoursMonth(taskData.months, taskData.task, monthIndex, worked);
                     }
                 }
             }
@@ -195,13 +191,13 @@ public class ManagerDAO {
                 for (CollaboratorTaskData taskData : wpData.taskDataById.values()) {
                     tasks.add(new ManagerCollaboratorTaskResponse(
                             taskData.task,
-                            taskData.workedHoursByMonth
+                            taskData.months
                     ));
                 }
 
                 wpList.add(new ManagerCollaboratorWPResponse(
                         wpData.wp,
-                        wpData.totalWorkedHoursByMonth,
+                        buildWPWorkedHoursMonths(wpData.wp, wpData.taskDataById.values()),
                         tasks
                 ));
             }
@@ -214,8 +210,6 @@ public class ManagerDAO {
 
     private static class WPMonitoringData {
         private final WP wp;
-        private final Map<Integer, Integer> totalExpectedHoursByMonth = new HashMap<>();
-        private final Map<Integer, Integer> totalWorkedHoursByMonth = new HashMap<>();
         private final Map<Integer, TaskMonitoringData> taskDataById = new LinkedHashMap<>();
 
         private WPMonitoringData(WP wp) {
@@ -225,11 +219,11 @@ public class ManagerDAO {
 
     private static class TaskMonitoringData {
         private final Task task;
-        private final Map<Integer, Integer> expectedHoursByMonth = new HashMap<>();
-        private final Map<Integer, Integer> workedHoursByMonth = new HashMap<>();
+        private final List<TaskHoursMonth> months;
 
         private TaskMonitoringData(Task task) {
             this.task = task;
+            this.months = initializeTaskHoursMonths(task);
         }
     }
 
@@ -244,7 +238,6 @@ public class ManagerDAO {
 
     private static class CollaboratorWPData {
         private final WP wp;
-        private final Map<Integer, Integer> totalWorkedHoursByMonth = new HashMap<>();
         private final Map<Integer, CollaboratorTaskData> taskDataById = new LinkedHashMap<>();
 
         private CollaboratorWPData(WP wp) {
@@ -254,10 +247,102 @@ public class ManagerDAO {
 
     private static class CollaboratorTaskData {
         private final Task task;
-        private final Map<Integer, Integer> workedHoursByMonth = new HashMap<>();
+        private final List<TaskWorkedHoursMonth> months;
 
         private CollaboratorTaskData(Task task) {
             this.task = task;
+            this.months = initializeTaskWorkedHoursMonths(task);
         }
+    }
+
+    private static Integer getNullableInt(ResultSet result, String columnName) throws SQLException {
+        int value = result.getInt(columnName);
+        return result.wasNull() ? null : value;
+    }
+
+    private static List<TaskHoursMonth> initializeTaskHoursMonths(Task task) {
+        List<TaskHoursMonth> months = new ArrayList<>();
+        for (int month = task.getStartMonth(); month <= task.getEndMonth(); month++) {
+            months.add(new TaskHoursMonth(month, null, 0));
+        }
+        return months;
+    }
+
+    private static void updateTaskHoursMonth(List<TaskHoursMonth> months, Task task, int month,
+                                             Integer expectedHours, int workedHours) {
+        if (!isMonthInTask(task, month)) {
+            return;
+        }
+        months.set(month - task.getStartMonth(), new TaskHoursMonth(month, expectedHours, workedHours));
+    }
+
+    private static List<WPHoursMonth> buildWPHoursMonths(WP wp, Iterable<TaskMonitoringData> taskDataList) {
+        List<WPHoursMonth> months = new ArrayList<>();
+        for (int month = wp.getStartMonth(); month <= wp.getEndMonth(); month++) {
+            int totalExpectedHours = 0;
+            int totalWorkedHours = 0;
+            boolean missingExpectedHours = false;
+
+            for (TaskMonitoringData taskData : taskDataList) {
+                if (!isMonthInTask(taskData.task, month)) {
+                    continue;
+                }
+
+                TaskHoursMonth taskMonth = taskData.months.get(month - taskData.task.getStartMonth());
+                Integer expectedHours = taskMonth.getExpectedHours();
+                if (expectedHours == null) {
+                    missingExpectedHours = true;
+                } else {
+                    totalExpectedHours += expectedHours;
+                }
+                totalWorkedHours += taskMonth.getWorkedHours();
+            }
+
+            months.add(new WPHoursMonth(
+                    month,
+                    missingExpectedHours ? null : totalExpectedHours,
+                    totalWorkedHours
+            ));
+        }
+        return months;
+    }
+
+    private static List<TaskWorkedHoursMonth> initializeTaskWorkedHoursMonths(Task task) {
+        List<TaskWorkedHoursMonth> months = new ArrayList<>();
+        for (int month = task.getStartMonth(); month <= task.getEndMonth(); month++) {
+            months.add(new TaskWorkedHoursMonth(month, 0));
+        }
+        return months;
+    }
+
+    private static void updateTaskWorkedHoursMonth(List<TaskWorkedHoursMonth> months, Task task,
+                                                   int month, int workedHours) {
+        if (!isMonthInTask(task, month)) {
+            return;
+        }
+        months.set(month - task.getStartMonth(), new TaskWorkedHoursMonth(month, workedHours));
+    }
+
+    private static List<WPWorkedHoursMonth> buildWPWorkedHoursMonths(WP wp,
+                                                                     Iterable<CollaboratorTaskData> taskDataList) {
+        List<WPWorkedHoursMonth> months = new ArrayList<>();
+        for (int month = wp.getStartMonth(); month <= wp.getEndMonth(); month++) {
+            int totalWorkedHours = 0;
+
+            for (CollaboratorTaskData taskData : taskDataList) {
+                if (!isMonthInTask(taskData.task, month)) {
+                    continue;
+                }
+                TaskWorkedHoursMonth taskMonth = taskData.months.get(month - taskData.task.getStartMonth());
+                totalWorkedHours += taskMonth.getWorkedHours();
+            }
+
+            months.add(new WPWorkedHoursMonth(month, totalWorkedHours));
+        }
+        return months;
+    }
+
+    private static boolean isMonthInTask(Task task, int month) {
+        return month >= task.getStartMonth() && month <= task.getEndMonth();
     }
 }

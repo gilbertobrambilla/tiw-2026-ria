@@ -1,22 +1,18 @@
 package it.polimi.tiw.beans.manager;
 
 import it.polimi.tiw.beans.WP;
+import it.polimi.tiw.beans.manager.monthly.WPHoursMonth;
 
 import java.util.List;
-import java.util.Map;
 
 public class ManagerWPMonitoringResponse {
     private final WP wp;
-    private final Map<Integer, Integer> totalExpectedHoursByMonth;
-    private final Map<Integer, Integer> totalWorkedHoursByMonth;
+    private final List<WPHoursMonth> months;
     private final List<ManagerTaskMonitoringResponse> tasks;
 
-    public ManagerWPMonitoringResponse(WP wp, Map<Integer, Integer> totalExpectedHoursByMonth,
-                                       Map<Integer, Integer> totalWorkedHoursByMonth,
-                                       List<ManagerTaskMonitoringResponse> tasks) {
+    public ManagerWPMonitoringResponse(WP wp, List<WPHoursMonth> months, List<ManagerTaskMonitoringResponse> tasks) {
         this.wp = wp;
-        this.totalExpectedHoursByMonth = totalExpectedHoursByMonth;
-        this.totalWorkedHoursByMonth = totalWorkedHoursByMonth;
+        this.months = months;
         this.tasks = tasks;
     }
 
@@ -24,12 +20,8 @@ public class ManagerWPMonitoringResponse {
         return wp;
     }
 
-    public Map<Integer, Integer> getTotalExpectedHoursByMonth() {
-        return totalExpectedHoursByMonth;
-    }
-
-    public Map<Integer, Integer> getTotalWorkedHoursByMonth() {
-        return totalWorkedHoursByMonth;
+    public List<WPHoursMonth> getMonths() {
+        return months;
     }
 
     public List<ManagerTaskMonitoringResponse> getTasks() {

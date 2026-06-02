@@ -2,22 +2,21 @@ package it.polimi.tiw.beans.manager;
 
 import it.polimi.tiw.beans.ManagedTask;
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.beans.manager.monthly.ExpectedHoursMonth;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class ManagerTaskAssignmentResponse {
     private final ManagedTask managedTask;
     private final List<User> availableCollaborators;
-    private final Map<Integer, Integer> expectedHoursByMonth;
+    private final List<ExpectedHoursMonth> expectedHours;
     private final List<Integer> collaboratorIds;
 
     public ManagerTaskAssignmentResponse(ManagedTask managedTask, List<User> availableCollaborators,
-                                         Map<Integer, Integer> expectedHoursByMonth, List<Integer> collaboratorIds) {
+                                         List<ExpectedHoursMonth> expectedHours, List<Integer> collaboratorIds) {
         this.managedTask = managedTask;
         this.availableCollaborators = availableCollaborators;
-        this.expectedHoursByMonth = expectedHoursByMonth;
+        this.expectedHours = expectedHours;
         this.collaboratorIds = collaboratorIds;
     }
 
@@ -29,8 +28,8 @@ public class ManagerTaskAssignmentResponse {
         return availableCollaborators;
     }
 
-    public Map<Integer, Integer> getExpectedHoursByMonth() {
-        return expectedHoursByMonth;
+    public List<ExpectedHoursMonth> getExpectedHours() {
+        return expectedHours;
     }
 
     public List<Integer> getCollaboratorIds() {

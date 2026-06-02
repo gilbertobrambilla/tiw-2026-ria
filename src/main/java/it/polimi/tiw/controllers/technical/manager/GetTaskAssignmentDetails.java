@@ -1,11 +1,13 @@
 package it.polimi.tiw.controllers.technical.manager;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.tiw.beans.ManagedTask;
 import it.polimi.tiw.beans.ProjectStatus;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.beans.UserLogin;
 import it.polimi.tiw.beans.manager.ManagerTaskAssignmentResponse;
+import it.polimi.tiw.beans.manager.monthly.ExpectedHoursMonth;
 import it.polimi.tiw.dao.TaskDAO;
 import it.polimi.tiw.dao.TaskHoursDAO;
 import it.polimi.tiw.dao.UserDAO;
@@ -21,7 +23,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Assignment details for a created-project task managed by the authenticated manager are returned.
@@ -55,7 +56,7 @@ public class GetTaskAssignmentDetails extends HttpServlet {
             }
 
             List<User> availableCollaborators = userDAO.getTechnicalUsersExceptManager(loggedInUser.getId());
-            Map<Integer, Integer> expectedHours = taskHoursDAO.getExpectedHoursByTask(taskId);
+            List<ExpectedHoursMonth> expectedHours = taskHoursDAO.getExpectedHoursByTask(managedTask.getTask());
             List<Integer> collaboratorIds = userDAO.getCollaboratorIdsByTask(taskId);
 
             ManagerTaskAssignmentResponse details = new ManagerTaskAssignmentResponse(
@@ -67,7 +68,8 @@ public class GetTaskAssignmentDetails extends HttpServlet {
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(new Gson().toJson(details));
+            Gson gson = new GsonBuilder().serializeNulls().create();
+            response.getWriter().write(gson.toJson(details));
         } catch (SQLException e) {
             sendTextError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database failure occurred while retrieving task assignment details");
         }

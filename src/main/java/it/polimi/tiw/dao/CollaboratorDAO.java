@@ -12,9 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CollaboratorDAO {
     private final Connection connection;
@@ -142,23 +140,22 @@ public class CollaboratorDAO {
     }
 
     private List<CollaboratorTaskMonthResponse> getCollaboratorTaskMonths(int taskId, int collaboratorId, int startMonth, int endMonth) throws SQLException {
-        Map<Integer, Integer> taskExpectedHours = getExpectedHoursByTask(taskId);
-        Map<Integer, Integer> collaboratorWorkedHours = getWorkedHoursByTaskAndCollaborator(taskId, collaboratorId);
-        List<CollaboratorTaskMonthResponse> months = new ArrayList<>();
-
-        for (int month = startMonth; month <= endMonth; month++) {
-            months.add(new CollaboratorTaskMonthResponse(
-                    month,
-                    taskExpectedHours.getOrDefault(month, 0),
-                    collaboratorWorkedHours.getOrDefault(month, 0)
-            ));
-        }
-
+        List<CollaboratorTaskMonthResponse> months = initializeCollaboratorTaskMonths(startMonth, endMonth);
+        applyExpectedHoursByTask(months, taskId, startMonth, endMonth);
+        applyWorkedHoursByTaskAndCollaborator(months, taskId, collaboratorId, startMonth, endMonth);
         return months;
     }
 
-    private Map<Integer, Integer> getExpectedHoursByTask(int taskId) throws SQLException {
-        Map<Integer, Integer> taskExpectedHours = new HashMap<>();
+    private List<CollaboratorTaskMonthResponse> initializeCollaboratorTaskMonths(int startMonth, int endMonth) {
+        List<CollaboratorTaskMonthResponse> months = new ArrayList<>();
+        for (int month = startMonth; month <= endMonth; month++) {
+            months.add(new CollaboratorTaskMonthResponse(month, 0, 0));
+        }
+        return months;
+    }
+
+    private void applyExpectedHoursByTask(List<CollaboratorTaskMonthResponse> months, int taskId,
+                                          int startMonth, int endMonth) throws SQLException {
         String query = "SELECT month_index, hours FROM task_expected_hours WHERE task_id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -166,16 +163,15 @@ public class CollaboratorDAO {
 
             try (ResultSet result = stmt.executeQuery()) {
                 while (result.next()) {
-                    taskExpectedHours.put(result.getInt("month_index"), result.getInt("hours"));
+                    setExpectedHours(months, startMonth, endMonth,
+                            result.getInt("month_index"), result.getInt("hours"));
                 }
             }
         }
-
-        return taskExpectedHours;
     }
 
-    private Map<Integer, Integer> getWorkedHoursByTaskAndCollaborator(int taskId, int collaboratorId) throws SQLException {
-        Map<Integer, Integer> collaboratorWorkedHours = new HashMap<>();
+    private void applyWorkedHoursByTaskAndCollaborator(List<CollaboratorTaskMonthResponse> months, int taskId,
+                                                       int collaboratorId, int startMonth, int endMonth) throws SQLException {
         String query = "SELECT month_index, hours FROM task_worked_hours WHERE task_id = ? AND user_id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -184,12 +180,39 @@ public class CollaboratorDAO {
 
             try (ResultSet result = stmt.executeQuery()) {
                 while (result.next()) {
-                    collaboratorWorkedHours.put(result.getInt("month_index"), result.getInt("hours"));
+                    setWorkedHours(months, startMonth, endMonth,
+                            result.getInt("month_index"), result.getInt("hours"));
                 }
             }
         }
+    }
 
-        return collaboratorWorkedHours;
+    private void setExpectedHours(List<CollaboratorTaskMonthResponse> months, int startMonth, int endMonth,
+                                  int month, int expectedHours) {
+        if (month < startMonth || month > endMonth) {
+            return;
+        }
+
+        CollaboratorTaskMonthResponse existing = months.get(month - startMonth);
+        months.set(month - startMonth, new CollaboratorTaskMonthResponse(
+                month,
+                expectedHours,
+                existing.getCollaboratorWorkedHours()
+        ));
+    }
+
+    private void setWorkedHours(List<CollaboratorTaskMonthResponse> months, int startMonth, int endMonth,
+                                int month, int workedHours) {
+        if (month < startMonth || month > endMonth) {
+            return;
+        }
+
+        CollaboratorTaskMonthResponse existing = months.get(month - startMonth);
+        months.set(month - startMonth, new CollaboratorTaskMonthResponse(
+                month,
+                existing.getTaskExpectedHours(),
+                workedHours
+        ));
     }
 
     public Task getAssignedTaskForWorkedHoursUpdate(int taskId, int collaboratorId) throws SQLException {
