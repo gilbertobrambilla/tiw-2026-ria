@@ -11,13 +11,6 @@ public class WPBlueprint {
     public WPBlueprint() {
     }
 
-    public WPBlueprint(String title, int startMonth, int endMonth, List<TaskBlueprint> tasks) {
-        this.title = title;
-        this.startMonth = startMonth;
-        this.endMonth = endMonth;
-        this.tasks = tasks;
-    }
-
     public String getTitle() {
         return title;
     }

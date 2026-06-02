@@ -9,13 +9,6 @@ public class TaskBlueprint {
     public TaskBlueprint() {
     }
 
-    public TaskBlueprint(String title, String description, int startMonth, int endMonth) {
-        this.title = title;
-        this.description = description;
-        this.startMonth = startMonth;
-        this.endMonth = endMonth;
-    }
-
     public String getTitle() {
         return title;
     }
