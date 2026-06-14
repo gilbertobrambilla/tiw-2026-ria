@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Collaborator Home - Project Management</title>
+    <link rel="stylesheet" href="../../global.css">
+</head>
+<body>
+
+<div class="navbar">
+    <span id="collaboratorGreeting">Welcome, Collaborator</span>
+    <div class="nav-links">
+        <a id="logoutLink" href="../../logout">Logout</a>
+    </div>
+</div>
+
+<div class="wrapper collaborator-page">
+    <div id="collaboratorHomeBox" class="row collaborator-box">
+        <div class="collaborator-layout">
+            <div class="collaborator-side">
+                <h3>Your Projects</h3>
+
+                <div id="assignedProjectsListEmpty" class="empty-message hidden">
+                    No assigned projects found.
+                </div>
+
+                <div id="assignedProjectsList" class="collaborator-project-tree hidden">
+                    <!-- Sample assigned project tree for JavaScript rendering.
+                    <div class="collaborator-project-item">
+                        <span class="collaborator-project-title">New Web Platform</span>
+
+                        <div class="collaborator-wp-item">
+                            <span class="collaborator-wp-title">WP1 - Analysis and Design</span>
+
+                            <div class="collaborator-task-list">
+                                <button id="taskLink101" type="button" class="collaborator-task-link active-task-link">T1.1 Requirements Collection</button>
+                                <button id="taskLink102" type="button" class="collaborator-task-link">T1.2 Technical Review</button>
+                            </div>
+                        </div>
+
+                        <div class="collaborator-wp-item">
+                            <span class="collaborator-wp-title">WP2 - Implementation</span>
+
+                            <div class="collaborator-task-list">
+                                <button id="taskLink201" type="button" class="collaborator-task-link">T2.1 Frontend Development</button>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+                </div>
+
+                <div id="assignedProjectsListError" class="error-message hidden">Unable to load assigned projects.</div>
+            </div>
+
+            <div class="collaborator-viewer">
+                <h3>Task Timesheet</h3>
+
+                <div id="collaboratorTimesheet" class="timesheet-panel hidden">
+                    <div id="collaboratorTimesheetHeader" class="task-header-info">
+                        <!-- Sample timesheet header data for JavaScript rendering.
+                        Task Timesheet: Requirements Collection
+                        Project: New Web Platform
+                        Description: Collect and refine project requirements.
+                        Active Period: Month 1 to Month 3
+                        Total Expected Hours: 70
+                        Your Total Worked Hours: 30
+                        -->
+                        <h3 id="collaboratorTimesheetTitle">Task Timesheet</h3>
+                        <p><span class="info-label">Project:</span> <span id="collaboratorTimesheetProjectTitle"></span></p>
+                        <p><span class="info-label">Description:</span> <span id="collaboratorTimesheetTaskDescription"></span></p>
+                        <p><span class="info-label">Active Period:</span> <span id="collaboratorTimesheetTaskPeriod"></span></p>
+                        <p><span class="info-label">Total Expected Hours:</span> <span id="collaboratorTimesheetTotalExpectedHours"></span></p>
+                        <p><span class="info-label">Your Total Worked Hours:</span> <span id="collaboratorTimesheetTotalWorkedHours"></span></p>
+                    </div>
+
+                    <div id="collaboratorTimesheetTableBox" class="report-table-scroll">
+                        <table id="collaboratorTimesheetTable" class="data-table collaborator-table">
+                            <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Planned Hours</th>
+                                <th>Your Worked Hours</th>
+                            </tr>
+                            </thead>
+                            <tbody id="collaboratorTimesheetTableBody">
+                            <!-- Sample timesheet month rows for JavaScript rendering.
+                            <tr>
+                                <td>M1</td>
+                                <td>20</td>
+                                <td>
+                                    <input class="worked-hours-input" type="number" name="workedHours_1" value="12" min="0" step="1">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>M2</td>
+                                <td>35</td>
+                                <td>
+                                    <input class="worked-hours-input" type="number" name="workedHours_2" value="18" min="0" step="1">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>M3</td>
+                                <td>15</td>
+                                <td>
+                                    <input class="worked-hours-input" type="number" name="workedHours_3" value="0" min="0" step="1">
+                                </td>
+                            </tr>
+                            -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="collaboratorTimesheetError" class="error-message hidden">Worked hours must be a non-negative integer.</div>
+                    <div id="collaboratorTimesheetSuccess" class="success-message hidden">Worked hours updated successfully.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

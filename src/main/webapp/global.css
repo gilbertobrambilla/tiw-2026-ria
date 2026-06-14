@@ -1,0 +1,835 @@
+/* =========================================
+   GLOBAL DECLARATIONS
+   ========================================= */
+
+:root {
+    --primary-dark: #054a91;
+    --primary-mid: #3e7cb1;
+    --primary-light: #81a4cd;
+    --bg-color: #f4f7f6;
+    --border-color: #ddd;
+    --text-color: #333;
+    --muted-color: #666;
+    --error-color: #d9534f;
+    --error-bg: #fdf7f7;
+    --success-color: #2f7d32;
+    --success-bg: #f4fbf4;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h2, h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--primary-dark);
+    text-align: center;
+}
+
+input, select, textarea, button {
+    font: inherit;
+}
+
+input, select, textarea {
+    width: 100%;
+    height: 34px;
+    padding: 6px 9px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: white;
+    color: var(--text-color);
+    font-size: 0.9em;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-mid);
+}
+
+button {
+    height: 34px;
+}
+
+button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+fieldset:disabled {
+    opacity: 0.72;
+}
+
+fieldset:disabled input,
+fieldset:disabled select,
+fieldset:disabled textarea,
+.disabled input,
+.disabled select,
+.disabled textarea {
+    background-color: #f2f5f8;
+    color: var(--muted-color);
+    cursor: not-allowed;
+}
+
+label {
+    margin-bottom: 6px;
+    color: #444;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 30px;
+    background-color: var(--primary-dark);
+    color: white;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    opacity: 0.75;
+}
+
+.navbar a:hover {
+    opacity: 1;
+}
+
+.navbar .active-nav {
+    color: #fff36d;
+    font-weight: bold;
+    opacity: 1;
+}
+
+.nav-links {
+    display: flex;
+    gap: 10px;
+}
+
+.wrapper {
+    max-width: 1280px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    padding: 30px;
+    border-top: 4px solid var(--primary-mid);
+    border-radius: 8px;
+    background-color: white;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+.form-row-double {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row-double .form-group {
+    width: 50%;
+}
+
+.btn {
+    height: 34px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 4px;
+    background-color: var(--primary-mid);
+    color: white;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn:disabled:hover {
+    background-color: var(--primary-mid);
+}
+
+.btn-link {
+    display: block;
+    line-height: 34px;
+    text-decoration: none;
+}
+
+.danger {
+    background-color: var(--error-color);
+}
+
+.danger:hover {
+    background-color: #b83d39;
+}
+
+.error-message,
+.success-message {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-align: center;
+}
+
+.error-message {
+    border-left: 4px solid var(--error-color);
+    background-color: var(--error-bg);
+    color: var(--error-color);
+}
+
+.success-message {
+    border-left: 4px solid var(--success-color);
+    background-color: var(--success-bg);
+    color: var(--success-color);
+}
+
+.empty-message {
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding: 12px;
+    border-left: 4px solid var(--primary-light);
+    border-radius: 0 4px 4px 0;
+    background-color: #f7f9fb;
+    color: var(--muted-color);
+    font-size: 0.9em;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* =========================================
+   LOGIN SCREEN
+   ========================================= */
+
+.login-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+}
+
+.login-form {
+    width: 350px;
+}
+
+.login-form .btn {
+    width: 100%;
+}
+
+.role-selection {
+    width: 420px;
+}
+
+.login-message {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--muted-color);
+    font-size: 0.95em;
+    text-align: center;
+}
+
+.role-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.role-options .btn {
+    width: 100%;
+}
+
+/* =========================================
+   ADMIN INTERFACE
+   ========================================= */
+
+.project-line {
+    width: 100%;
+}
+
+.project-fields {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#projectTitleInput {
+    width: 46%;
+}
+
+#projectDurationInput {
+    width: 14%;
+}
+
+#projectManagerSelect {
+    width: 30%;
+}
+
+.project-next {
+    width: 10%;
+}
+
+.draft-panel {
+    margin-top: 28px;
+    padding-top: 26px;
+    border-top: 1px solid var(--border-color);
+}
+
+.title-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.title-line h3 {
+    margin-bottom: 0;
+}
+
+.title-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.wp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.wp-box {
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--primary-light);
+    border-radius: 6px;
+    background-color: white;
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    padding-left: 18px;
+}
+
+.task-box {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: #fbfbfb;
+}
+
+.seq {
+    width: 5%;
+    /*height: 34px;*/
+    line-height: 34px;
+    color: var(--primary-dark);
+    font-size: 0.95em;
+    font-weight: bold;
+    text-align: left;
+}
+
+.wp-line,
+.task-line {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.wp-line .wide {
+    width: 56.8%;
+}
+
+.wp-line .month {
+    width: 12%;
+}
+
+.wp-line .line-button {
+    width: 10%;
+}
+
+.task-line .title {
+    width: 22%;
+}
+
+.task-line .description {
+    width: 35%;
+}
+
+.task-line .month {
+    width: 12%;
+}
+
+.task-line .line-button {
+    width: 10%;
+}
+
+.right-actions,
+.save-line {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.save-line .btn {
+    width: 260px;
+}
+
+.split {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.side {
+    width: 300px;
+    padding-right: 15px;
+}
+
+.side h3 {
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary-mid);
+    text-align: left;
+}
+
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.project-list button {
+    width: 100%;
+    padding: 0 15px;
+    border: 0;
+    border-radius: 4px;
+    background-color: transparent;
+    color: var(--text-color);
+    cursor: pointer;
+    font-weight: 500;
+    text-align: left;
+}
+
+.project-list button:hover {
+    background-color: #edf4fa;
+    color: var(--primary-dark);
+}
+
+.project-list .active-link {
+    background-color: var(--primary-mid);
+    color: white;
+    font-weight: bold;
+}
+
+.viewer {
+    width: 820px;
+}
+
+.viewer h3 {
+    text-align: left;
+}
+
+.project-tree {
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: #fafafa;
+}
+
+.tree-project {
+    color: var(--primary-dark);
+    font-size: 1.15em;
+}
+
+.tree-project-title {
+    display: block;
+    font-weight: bold;
+}
+
+.tree-wp {
+    margin-top: 20px;
+    margin-left: 20px;
+    padding-left: 20px;
+    border-left: 3px solid var(--primary-light);
+}
+
+.node-title {
+    color: var(--primary-mid);
+    font-size: 1.05em;
+    font-weight: bold;
+}
+
+.node-meta {
+    margin-left: 10px;
+    color: var(--muted-color);
+    font-size: 0.85em;
+}
+
+.tree-task {
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: white;
+    font-size: 0.95em;
+}
+
+.task-code {
+    color: #444;
+    font-weight: bold;
+}
+
+.task-desc-text {
+    display: block;
+    margin: 4px 0 8px;
+    color: var(--muted-color);
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+.task-details {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background-color: #f7f9fb;
+    color: var(--muted-color);
+    font-size: 0.85em;
+}
+
+/* =========================================
+   MANAGER INTERFACE
+   ========================================= */
+
+.manager-box h3 {
+    text-align: left;
+}
+
+.manager-selector-form {
+    margin-top: 15px;
+}
+
+.manager-control-line {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.manager-select-group {
+    width: 72%;
+    margin-bottom: 0;
+}
+
+.manager-load-button {
+    width: 28%;
+}
+
+.manager-detail-panel {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.manager-summary {
+    margin-top: 0;
+    margin-bottom: 18px;
+    color: var(--muted-color);
+    font-size: 0.95em;
+}
+
+.manager-subtitle {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: var(--primary-dark);
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.month-hours-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.month-hour-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.month-label {
+    width: 110px;
+    margin-bottom: 0;
+    line-height: 34px;
+}
+
+.month-hour-line input {
+    width: 160px;
+}
+
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: #fbfbfb;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 24px;
+}
+
+.checkbox-item input {
+    width: 16px;
+    height: 16px;
+}
+
+.checkbox-item label {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+.manager-actions {
+    margin-top: 20px;
+}
+
+.btn-secondary {
+    background-color: var(--primary-light);
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-mid);
+}
+
+.report-table-scroll {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    background-color: white;
+    font-size: 0.9em;
+}
+
+.data-table th,
+.data-table td {
+    height: 34px;
+    padding: 7px 9px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.data-table th {
+    background-color: var(--primary-dark);
+    color: white;
+}
+
+.data-table .row-project th {
+    background-color: var(--primary-mid);
+}
+
+.data-table .row-wp-sub td {
+    background-color: #edf4fa;
+    color: var(--primary-dark);
+    font-weight: bold;
+}
+
+.data-table .row-task td {
+    background-color: white;
+}
+
+.data-table .task-name {
+    text-align: left;
+}
+
+.conclude-section {
+    margin-top: 18px;
+}
+
+.btn-conclude {
+    width: 220px;
+    margin-top: 12px;
+}
+
+/* =========================================
+   COLLABORATOR INTERFACE
+   ========================================= */
+
+.collaborator-box {
+    justify-content: flex-start;
+}
+
+.collaborator-layout {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.collaborator-side {
+    width: 320px;
+    padding-right: 15px;
+}
+
+.collaborator-side h3,
+.collaborator-viewer h3 {
+    text-align: left;
+}
+
+.collaborator-side h3 {
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary-mid);
+}
+
+.collaborator-viewer {
+    width: 820px;
+}
+
+.collaborator-project-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.collaborator-project-item {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--primary-light);
+    border-radius: 4px;
+    background-color: #fbfbfb;
+}
+
+.collaborator-project-title {
+    display: block;
+    color: var(--primary-dark);
+    font-weight: bold;
+}
+
+.collaborator-wp-item {
+    margin-top: 12px;
+    margin-left: 12px;
+    padding-left: 12px;
+    border-left: 2px solid var(--primary-light);
+}
+
+.collaborator-wp-title {
+    display: block;
+    color: var(--primary-mid);
+    font-size: 0.92em;
+    font-weight: bold;
+}
+
+.collaborator-task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.collaborator-task-link {
+    width: 100%;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 4px;
+    background-color: white;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 0.9em;
+    text-align: left;
+}
+
+.collaborator-task-link:hover {
+    background-color: #edf4fa;
+    color: var(--primary-dark);
+}
+
+.active-task-link {
+    background-color: var(--primary-mid);
+    color: white;
+    font-weight: bold;
+}
+
+.timesheet-panel {
+    margin-top: 15px;
+}
+
+.task-header-info {
+    margin-bottom: 18px;
+    padding: 14px;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--primary-light);
+    border-radius: 4px;
+    background-color: #fbfbfb;
+}
+
+.task-header-info h3 {
+    margin-bottom: 12px;
+}
+
+.task-header-info p {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    color: var(--text-color);
+    font-size: 0.95em;
+}
+
+.info-label {
+    color: var(--primary-dark);
+    font-weight: bold;
+}
+
+.collaborator-table {
+    min-width: 600px;
+}
+
+.worked-hours-input {
+    width: 120px;
+    text-align: center;
+}
