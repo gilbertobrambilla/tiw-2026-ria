@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>Administrator Home - Project Management</title>
     <link rel="stylesheet" href="../global.css">
+    <script src="../scripts/utils.js" defer></script>
+    <script src="create-project-structure/state.js" defer></script>
+    <script src="create-project-structure/view.js" defer></script>
+    <script src="create-project-structure/orchestrator.js" defer></script>
+    <script src="verify-projects/view.js" defer></script>
+    <script src="verify-projects/orchestrator.js" defer></script>
+    <script src="adminOrchestrator.js" defer></script>
 </head>
 <body>
 
@@ -15,128 +22,65 @@
 </div>
 
 <div class="wrapper admin-page">
-    <div id="adminDraftBox" class="row admin-box">
+    <div id="createProjectStructure-box" class="row admin-box">
         <div class="full-width">
-            <h3>Create New Project</h3>
+            <div class="title-line">
+                <h3>Create Project</h3>
+                <div class="title-buttons">
+                    <button id="createProjectStructure-undoButton" type="button" class="btn" disabled>UNDO</button>
+                    <button id="createProjectStructure-redoButton" type="button" class="btn" disabled>REDO</button>
+                </div>
+            </div>
 
-            <form id="projectDraftForm" autocomplete="off">
-                <div class="project-line">
-                    <fieldset id="projectDraftFields" class="project-fields" disabled>
-                        <input id="projectTitleInput" name="title" type="text" placeholder="Project Title" maxlength="100" required>
-                        <input id="projectDurationInput" name="durationMonths" type="number" placeholder="Duration (months)" min="1" required>
-                        <select id="projectManagerSelect" name="managedBy" required>
-                            <option value="">-- Select Technical User --</option>
-                            <!-- Sample technical user option for JavaScript rendering.
-                            <option value="1" selected>Technical User</option>
-                            -->
+            <form id="createProjectStructure-projectHeaderForm" autocomplete="off">
+                <div class="project-header-line">
+                    <fieldset id="createProjectStructure-projectHeaderFields" class="project-header-fields" disabled>
+                        <input id="createProjectStructure-projectTitleInput" name="title" type="text" placeholder="Project Title" maxlength="100" required>
+                        <input id="createProjectStructure-projectDurationInput" name="durationMonths" type="text" placeholder="Duration" inputmode="numeric" required>
+                        <select id="createProjectStructure-projectManagerSelect" name="managedBy" required>
+                            <option value="0" selected disabled>-- Select Technical User --</option>
                         </select>
-                        <button id="prepareProjectButton" type="button" class="btn project-next">NEXT</button>
+                        <button id="createProjectStructure-enterStructurePhaseButton" type="button" class="btn project-header-next">NEXT</button>
                     </fieldset>
                 </div>
 
-                <div id="projectDraftError" class="error-message hidden">Project data is not valid.</div>
+                <div id="createProjectStructure-projectHeaderError" class="error-message hidden">Project header is not valid.</div>
             </form>
 
-            <div id="draftPanel" class="draft-panel hidden">
-                <div class="title-line">
-                    <h3>Draft Project Structure</h3>
-                    <div class="title-buttons">
-                        <button id="undoButton" type="button" class="btn" disabled>UNDO</button>
-                        <button id="redoButton" type="button" class="btn" disabled>REDO</button>
-                    </div>
+            <div id="createProjectStructure-projectStructurePanel" class="project-structure-panel hidden">
+                <div class="structure-title-line">
+                    <h3>Project Structure</h3>
                 </div>
 
-                <div id="draftWorkPackageList" class="wp-list">
-                    <!-- Sample work package and task block for JavaScript rendering.
-                    <div class="wp-box">
-                        <div class="wp-line">
-                            <span class="seq">WP1</span>
-                            <input class="wp-title-input wide" type="text" value="Analysis and Design" placeholder="WP Title" maxlength="100" required>
-                            <input class="wp-start-month-input month" type="number" value="1" placeholder="Start Month" min="1" required>
-                            <input class="wp-end-month-input month" type="number" value="4" placeholder="End Month" min="1" required>
-                            <button type="button" class="btn danger line-button remove-wp-button">- WP</button>
-                        </div>
-
-                        <div class="task-list">
-                            <div class="task-box">
-                                <div class="task-line">
-                                    <span class="seq">T1.1</span>
-                                    <input class="task-title-input title" type="text" value="Requirements Collection" placeholder="Task Title" maxlength="100" required>
-                                    <input class="task-description-input description" type="text" value="Collect and refine project requirements." placeholder="Description" required>
-                                    <input class="task-start-month-input month" type="number" value="1" placeholder="Start Month" min="1" required>
-                                    <input class="task-end-month-input month" type="number" value="2" placeholder="End Month" min="1" required>
-                                    <button type="button" class="btn danger line-button remove-task-button">- Task</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="right-actions">
-                            <button type="button" class="btn add-task-button">+ Task</button>
-                        </div>
-                    </div>
-                    -->
+                <div id="createProjectStructure-projectStructureWPList" class="project-structure-wp-list">
                 </div>
 
                 <div class="right-actions">
-                    <button id="addWorkPackageButton" type="button" class="btn">+ WP</button>
+                    <button id="createProjectStructure-addWPButton" type="button" class="btn">+ WP</button>
                 </div>
 
                 <div class="save-line">
-                    <button id="saveDraftProjectButton" type="button" class="btn">SAVE PROJECT</button>
+                    <button id="createProjectStructure-saveProjectStructureButton" type="button" class="btn">SAVE PROJECT</button>
                 </div>
 
-                <div id="saveProjectError" class="error-message hidden">Project structure is not valid.</div>
-                <div id="saveProjectSuccess" class="success-message hidden">Project structure saved successfully.</div>
+                <div id="createProjectStructure-projectStructureError" class="error-message hidden">Project structure is not valid.</div>
             </div>
+
+            <div id="createProjectStructure-success" class="success-message hidden">Project structure saved successfully.</div>
         </div>
     </div>
 
-    <div id="savedProjectsBox" class="row split">
+    <div id="verifyProjects-box" class="row split">
         <div class="side">
             <h3>Your Projects</h3>
-            <div id="savedProjectsList" class="project-list">
-                <!-- Sample saved project buttons for JavaScript rendering.
-                <button type="button" class="active-link">New Web Platform</button>
-                <button type="button">Reporting System</button>
-                -->
+            <div id="verifyProjects-projectList" class="project-list">
             </div>
-            <div id="savedProjectsError" class="error-message hidden">Unable to load the selected project structure.</div>
+            <div id="verifyProjects-error" class="error-message hidden">Unable to load the selected project structure.</div>
         </div>
 
-        <div id="projectViewer" class="viewer hidden">
+        <div id="verifyProjects-projectViewer" class="viewer hidden">
             <h3>Project Structure</h3>
-            <div id="savedProjectTree" class="project-tree">
-                <!-- Sample saved project tree for JavaScript rendering.
-                <div class="tree-project">
-                    <span class="tree-project-title">PROJECT: New Web Platform</span>
-
-                    <div class="tree-wp">
-                        <div>
-                            <span class="node-title">WP1: Analysis and Design</span>
-                            <span class="node-meta">(Start Month: M1, End Month: M4)</span>
-                        </div>
-                        <div class="tree-task">
-                            <span class="task-code">T1.1: </span>
-                            <span>Requirements Collection</span>
-                            <span class="task-desc-text">Collect and refine project requirements.</span>
-                            <span class="task-details">Period: M1 - M2 | Total planned hours: 0 | Total worked hours: 0</span>
-                        </div>
-                    </div>
-
-                    <div class="tree-wp">
-                        <div>
-                            <span class="node-title">WP2: Implementation</span>
-                            <span class="node-meta">(Start Month: M5, End Month: M12)</span>
-                        </div>
-                        <div class="tree-task">
-                            <span class="task-code">T2.1: </span>
-                            <span>Frontend Development</span>
-                            <span class="task-desc-text">Build the user interface for the application.</span>
-                            <span class="task-details">Period: M5 - M8 | Total planned hours: 0 | Total worked hours: 0</span>
-                        </div>
-                    </div>
-                </div>
-                -->
+            <div id="verifyProjects-projectTree" class="project-tree">
             </div>
         </div>
     </div>
