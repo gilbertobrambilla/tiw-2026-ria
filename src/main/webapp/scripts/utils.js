@@ -1,6 +1,3 @@
-/*
- * Shared AJAX utilities.
- */
 
 function makeCall(method, url, formElement, callback, reset = true) {
     let request = new XMLHttpRequest();
@@ -19,4 +16,16 @@ function makeCall(method, url, formElement, callback, reset = true) {
             formElement.reset();
         }
     }
+}
+
+function makeJsonCall(method, url, data, callback) {
+    let request = new XMLHttpRequest();
+
+    request.onreadystatechange = function() {
+        callback(request);
+    };
+
+    request.open(method, url);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    request.send(JSON.stringify(data));
 }
