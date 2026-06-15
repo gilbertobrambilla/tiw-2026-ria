@@ -5,45 +5,45 @@
     <title>Login - Project Management</title>
     <link rel="stylesheet" href="global.css">
     <script src="scripts/utils.js" defer></script>
-    <script src="loginManagement.js" defer></script>
+    <script src="login.js" defer></script>
 </head>
 <body>
 
 <div class="navbar">
-    <span id="loginNavbarTitle">Project Management System</span>
+    <span id="login-navbarTitle">Project Management System</span>
 </div>
 
 <div class="wrapper login-wrapper">
-    <div id="loginForm" class="row login-form">
+    <div id="loginForm-box" class="row login-form">
         <div class="form-container">
             <h3>System Login</h3>
 
-            <form id="loginCredentialsForm" action="login" method="POST">
+            <form id="loginForm-credentialsForm" action="login" method="POST">
                 <div class="form-group">
-                    <label for="usernameInput">Username:</label>
-                    <input id="usernameInput" type="text" name="username" required autocomplete="off">
+                    <label for="loginForm-usernameInput">Username:</label>
+                    <input id="loginForm-usernameInput" type="text" name="username" required autocomplete="off">
                 </div>
 
                 <div class="form-group">
-                    <label for="passwordInput">Password:</label>
-                    <input id="passwordInput" type="password" name="password" required autocomplete="off">
+                    <label for="loginForm-passwordInput">Password:</label>
+                    <input id="loginForm-passwordInput" type="password" name="password" required autocomplete="off">
                 </div>
 
-                <button id="loginButton" type="button" class="btn">LOGIN</button>
+                <button id="loginForm-loginButton" type="button" class="btn">LOGIN</button>
 
-                <div id="loginFormError" class="error-message hidden">Invalid credentials.</div>
+                <div id="loginForm-error" class="error-message hidden">Invalid credentials.</div>
             </form>
         </div>
     </div>
 
-    <div id="technicalRoleSelector" class="row role-selection hidden">
+    <div id="technicalRoleSelector-box" class="row technical-role-selector hidden">
         <div class="form-container">
             <h3>Select Role</h3>
-            <p id="technicalRoleSelectorText" class="login-message">Please select the role you want to use for this session:</p>
+            <p id="technicalRoleSelector-text" class="login-message">Please select the role you want to use for this session:</p>
 
             <div class="role-options">
-                <a id="technicalRoleSelectorManagerLink" href="technical/manager/home-manager.html" class="btn btn-link">Access as Project Manager</a>
-                <a id="technicalRoleSelectorCollaboratorLink" href="technical/collaborator/home-collaborator.html" class="btn btn-link">Access as Collaborator</a>
+                <a id="technicalRoleSelector-managerLink" href="technical/manager/home-manager.html" class="btn btn-link">Access as Project Manager</a>
+                <a id="technicalRoleSelector-collaboratorLink" href="technical/collaborator/home-collaborator.html" class="btn btn-link">Access as Collaborator</a>
             </div>
         </div>
     </div>

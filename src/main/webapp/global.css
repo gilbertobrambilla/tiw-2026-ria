@@ -93,10 +93,6 @@ label {
     font-weight: bold;
 }
 
-.hidden {
-    display: none;
-}
-
 .navbar {
     display: flex;
     align-items: center;
@@ -216,6 +212,7 @@ label {
     border-left: 4px solid var(--error-color);
     background-color: var(--error-bg);
     color: var(--error-color);
+    white-space: pre-line;
 }
 
 .success-message {
@@ -256,7 +253,7 @@ label {
     width: 100%;
 }
 
-.role-selection {
+.technical-role-selector {
     width: 420px;
 }
 
@@ -282,33 +279,33 @@ label {
    ADMIN INTERFACE
    ========================================= */
 
-.project-line {
+.project-header-line {
     width: 100%;
 }
 
-.project-fields {
+.project-header-fields {
     display: flex;
     gap: 10px;
     align-items: center;
 }
 
-#projectTitleInput {
+#createProjectStructure-projectTitleInput {
     width: 46%;
 }
 
-#projectDurationInput {
+#createProjectStructure-projectDurationInput {
     width: 14%;
 }
 
-#projectManagerSelect {
+#createProjectStructure-projectManagerSelect {
     width: 30%;
 }
 
-.project-next {
+.project-header-next {
     width: 10%;
 }
 
-.draft-panel {
+.project-structure-panel {
     margin-top: 28px;
     padding-top: 26px;
     border-top: 1px solid var(--border-color);
@@ -330,7 +327,11 @@ label {
     gap: 10px;
 }
 
-.wp-list {
+.structure-title-line h3 {
+    text-align: center;
+}
+
+.project-structure-wp-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -419,6 +420,7 @@ label {
     display: flex;
     gap: 40px;
     align-items: flex-start;
+    justify-content: flex-start;
 }
 
 .side {
@@ -832,4 +834,8 @@ label {
 .worked-hours-input {
     width: 120px;
     text-align: center;
+}
+
+.hidden {
+    display: none;
 }
