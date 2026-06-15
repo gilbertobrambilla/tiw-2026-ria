@@ -6,6 +6,7 @@ import it.polimi.tiw.dao.UserDAO;
 import it.polimi.tiw.utils.DatabaseConnection;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @WebServlet("/login")
+@MultipartConfig
 public class Login extends HttpServlet {
 
     @Override

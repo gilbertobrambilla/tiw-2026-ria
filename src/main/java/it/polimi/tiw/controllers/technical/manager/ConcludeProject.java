@@ -6,6 +6,7 @@ import it.polimi.tiw.beans.UserLogin;
 import it.polimi.tiw.dao.ProjectDAO;
 import it.polimi.tiw.utils.DatabaseConnection;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @WebServlet("/technical/manager/conclude-project")
+@MultipartConfig
 public class ConcludeProject extends HttpServlet {
 
     @Override

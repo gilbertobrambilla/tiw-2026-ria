@@ -5,6 +5,7 @@ import it.polimi.tiw.beans.Task;
 import it.polimi.tiw.dao.CollaboratorDAO;
 import it.polimi.tiw.utils.DatabaseConnection;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @WebServlet("/technical/collaborator/update-worked-hours")
+@MultipartConfig
 public class UpdateCollaboratorWorkedHours extends HttpServlet {
 
     @Override

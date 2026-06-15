@@ -11,6 +11,7 @@ import it.polimi.tiw.dao.TaskHoursDAO;
 import it.polimi.tiw.dao.UserDAO;
 import it.polimi.tiw.utils.DatabaseConnection;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 @WebServlet("/technical/manager/save-task-assignment")
+@MultipartConfig
 public class SaveTaskAssignment extends HttpServlet {
 
     @Override
