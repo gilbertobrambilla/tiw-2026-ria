@@ -209,6 +209,44 @@ function CreateProjectStructureState() {
         return saveSnapshot();
     };
 
+    // a task is moved
+    this.moveTask = function(sourceWPIndex, sourceTaskIndex, destinationWPIndex, destinationTaskIndex) {
+        let sourceWP;
+        let destinationWP;
+        let destinationIndex;
+        let task;
+
+        if (state.uiState.phase !== 2 ||
+            sourceWPIndex < 0 ||
+            sourceWPIndex >= state.projectData.workPackages.length ||
+            destinationWPIndex < 0 ||
+            destinationWPIndex >= state.projectData.workPackages.length) {
+            return false;
+        }
+
+        sourceWP = state.projectData.workPackages[sourceWPIndex];
+        destinationWP = state.projectData.workPackages[destinationWPIndex];
+        if (sourceTaskIndex < 0 ||
+            sourceTaskIndex >= sourceWP.tasks.length ||
+            destinationTaskIndex < 0 ||
+            destinationTaskIndex > destinationWP.tasks.length) {
+            return false;
+        }
+
+        destinationIndex = destinationTaskIndex;
+        if (sourceWPIndex === destinationWPIndex && sourceTaskIndex < destinationTaskIndex) {
+            destinationIndex--;
+        }
+
+        if (sourceWPIndex === destinationWPIndex && sourceTaskIndex === destinationIndex) {
+            return false;
+        }
+
+        task = sourceWP.tasks.splice(sourceTaskIndex, 1)[0];
+        destinationWP.tasks.splice(destinationIndex, 0, task);
+        return saveSnapshot();
+    };
+
     // a task field is updated
     this.updateTaskField = function(wpIndex, taskIndex, fieldName, value) {
         let wp;

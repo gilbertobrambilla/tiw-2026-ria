@@ -168,9 +168,12 @@ function ProjectHeaderView(form, fields, titleInput, durationInput, managerSelec
 
 // the project structure view is managed
 function ProjectStructureView(panel, wpList, addWPButton, saveButton, errorContainer) {
+    let dragAndDrop = new CreateProjectStructureDragAndDrop(wpList);
 
     // structure events are registered
     this.registerEvents = function(orchestrator) {
+        dragAndDrop.registerEvents(orchestrator);
+
         addWPButton.addEventListener("click", function() {
             orchestrator.addWP();
         }, false);
@@ -312,19 +315,26 @@ function ProjectStructureView(panel, wpList, addWPButton, saveButton, errorConta
 
             taskList = document.createElement("div");
             taskList.className = "task-list";
+            taskList.setAttribute("data-wp-index", i);
+            taskList.setAttribute("data-task-count", wp.tasks.length);
 
             for (j = 0; j < wp.tasks.length; j++) {
                 task = wp.tasks[j];
 
                 taskBox = document.createElement("div");
                 taskBox.className = "task-box";
+                taskBox.setAttribute("data-wp-index", i);
+                taskBox.setAttribute("data-task-index", j);
 
                 taskLine = document.createElement("div");
                 taskLine.className = "task-line";
 
                 span = document.createElement("span");
-                span.className = "seq";
+                span.className = "seq task-drag-handle";
                 span.textContent = "T" + (i + 1) + "." + (j + 1);
+                span.draggable = true;
+                span.setAttribute("data-wp-index", i);
+                span.setAttribute("data-task-index", j);
                 taskLine.appendChild(span);
 
                 input = document.createElement("input");

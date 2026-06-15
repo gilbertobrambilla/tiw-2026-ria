@@ -351,6 +351,7 @@ label {
     gap: 8px;
     margin-top: 10px;
     padding-left: 18px;
+    min-height: 30px;
 }
 
 .task-box {
@@ -358,6 +359,18 @@ label {
     border: 1px solid var(--border-color);
     border-radius: 4px;
     background-color: #fbfbfb;
+}
+
+.task-box.dragging {
+    opacity: 0.55;
+}
+
+.task-drag-handle {
+    cursor: grab;
+}
+
+.task-drag-handle:active {
+    cursor: grabbing;
 }
 
 .seq {

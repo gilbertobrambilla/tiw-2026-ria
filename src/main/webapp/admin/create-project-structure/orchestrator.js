@@ -73,6 +73,14 @@ function CreateProjectStructureOrchestrator(projectSavedCallback) {
         }
     };
 
+    // a task move request is handled
+    this.moveTask = function(sourceWPIndex, sourceTaskIndex, destinationWPIndex, destinationTaskIndex) {
+        if (state.moveTask(sourceWPIndex, sourceTaskIndex, destinationWPIndex, destinationTaskIndex)) {
+            view.hideMessages();
+            refreshView();
+        }
+    };
+
     // a task field update is handled
     this.updateTaskField = function(wpIndex, taskIndex, fieldName, value) {
         if (state.updateTaskField(wpIndex, taskIndex, fieldName, value)) {
