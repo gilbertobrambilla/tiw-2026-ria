@@ -20,18 +20,24 @@ public class TechnicalFilter implements Filter {
 
         // authentication status is verified
         if (session == null || session.getAttribute("user") == null) {
-            res.sendRedirect(req.getServletContext().getContextPath() + "/login.html");
+            sendLoginLocation(req, res);
             return;
         }
 
         // technical macro-role is verified
         UserLogin user = (UserLogin) session.getAttribute("user");
         if (user.getRole() != UserRole.technical) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied. Technical role required.");
+            sendLoginLocation(req, res);
             return;
         }
 
         // request is passed along the chain
         chain.doFilter(request, response);
+    }
+
+    private void sendLoginLocation(HttpServletRequest req, HttpServletResponse res) {
+        String loginPath = req.getServletContext().getContextPath() + "/login.html";
+        res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        res.setHeader("Location", loginPath);
     }
 }

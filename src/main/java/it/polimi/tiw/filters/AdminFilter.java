@@ -20,7 +20,7 @@ public class AdminFilter implements Filter {
 
         // verify authentication status
         if (session == null || session.getAttribute("user") == null) {
-            res.sendRedirect(req.getServletContext().getContextPath() + "/login.html");
+            sendLoginLocation(req, res);
             return;
         }
 
@@ -28,11 +28,17 @@ public class AdminFilter implements Filter {
         UserLogin user = (UserLogin) session.getAttribute("user");
         UserRole role = user.getRole();
         if (!UserRole.admin.equals(role)) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied. Administrator role required.");
+            sendLoginLocation(req, res);
             return;
         }
 
         // pass request along the chain
         chain.doFilter(request, response);
+    }
+
+    private void sendLoginLocation(HttpServletRequest req, HttpServletResponse res) {
+        String loginPath = req.getServletContext().getContextPath() + "/login.html";
+        res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        res.setHeader("Location", loginPath);
     }
 }
