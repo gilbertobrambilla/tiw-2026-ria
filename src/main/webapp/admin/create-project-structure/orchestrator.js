@@ -127,7 +127,7 @@ function CreateProjectStructureOrchestrator(projectSavedCallback) {
                         projectSavedCallback(request.responseText);
                     }
                 } else if (request.status === 403) {
-                    window.location.href = request.getResponseHeader("Location");
+                    redirectToLogin(request);
                 } else {
                     view.showStructureError(request.responseText);
                 }
@@ -148,7 +148,7 @@ function CreateProjectStructureOrchestrator(projectSavedCallback) {
                     technicalUsers = JSON.parse(request.responseText);
                     refreshView();
                 } else if (request.status === 403) {
-                    window.location.href = request.getResponseHeader("Location");
+                    redirectToLogin(request);
                 } else {
                     view.showHeaderError(request.responseText);
                 }

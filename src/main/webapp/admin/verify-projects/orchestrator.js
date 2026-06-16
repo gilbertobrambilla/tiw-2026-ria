@@ -19,7 +19,7 @@ function VerifyProjectsOrchestrator() {
                 if (request.status === 200) {
                     view.showProjects(JSON.parse(request.responseText));
                 } else if (request.status === 403) {
-                    window.location.href = request.getResponseHeader("Location");
+                    redirectToLogin(request);
                 } else {
                     view.showError(request.responseText);
                 }
@@ -35,7 +35,7 @@ function VerifyProjectsOrchestrator() {
                 if (request.status === 200) {
                     view.showProjectStructure(JSON.parse(request.responseText));
                 } else if (request.status === 403) {
-                    window.location.href = request.getResponseHeader("Location");
+                    redirectToLogin(request);
                 } else {
                     view.showError(request.responseText);
                 }

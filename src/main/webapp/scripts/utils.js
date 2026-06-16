@@ -29,3 +29,9 @@ function makeJsonCall(method, url, data, callback) {
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.send(JSON.stringify(data));
 }
+
+function redirectToLogin(request) {
+    sessionStorage.removeItem("firstName");
+    sessionStorage.removeItem("lastName");
+    window.location.href = request.getResponseHeader("Location");
+}

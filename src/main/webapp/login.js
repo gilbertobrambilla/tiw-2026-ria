@@ -22,7 +22,7 @@
         }
 
         makeCall("POST", loginUrl, form, function(request) {
-            if (request.readyState === 4) {
+            if (request.readyState === XMLHttpRequest.DONE) {
                 if (request.status === 200) {
                     let user = JSON.parse(request.responseText);
 

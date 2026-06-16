@@ -805,17 +805,17 @@ label {
     color: var(--primary-dark);
 }
 
-.active-task-link {
+.collaborator-active-task-link {
     background-color: var(--primary-mid);
     color: white;
     font-weight: bold;
 }
 
-.timesheet-panel {
+.collaborator-timesheet-panel {
     margin-top: 15px;
 }
 
-.task-header-info {
+.collaborator-task-header-info {
     margin-bottom: 18px;
     padding: 14px;
     border: 1px solid var(--border-color);
@@ -824,18 +824,18 @@ label {
     background-color: #fbfbfb;
 }
 
-.task-header-info h3 {
+.collaborator-task-header-info h3 {
     margin-bottom: 12px;
 }
 
-.task-header-info p {
+.collaborator-task-header-info p {
     margin-top: 6px;
     margin-bottom: 6px;
     color: var(--text-color);
     font-size: 0.95em;
 }
 
-.info-label {
+.collaborator-info-label {
     color: var(--primary-dark);
     font-weight: bold;
 }
@@ -844,7 +844,7 @@ label {
     min-width: 600px;
 }
 
-.worked-hours-input {
+.collaborator-worked-hours-input {
     width: 120px;
     text-align: center;
 }
