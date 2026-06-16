@@ -4,27 +4,30 @@
     <meta charset="UTF-8">
     <title>Collaborator Home - Project Management</title>
     <link rel="stylesheet" href="../../global.css">
+    <script src="../../scripts/utils.js" defer></script>
+    <script src="view.js" defer></script>
+    <script src="collaboratorOrchestrator.js" defer></script>
 </head>
 <body>
 
 <div class="navbar">
-    <span id="collaboratorGreeting">Welcome, Collaborator</span>
+    <span id="collaboratorPage-greeting">Welcome, Collaborator</span>
     <div class="nav-links">
-        <a id="logoutLink" href="../../logout">Logout</a>
+        <a id="collaboratorPage-logoutLink" href="../../logout">Logout</a>
     </div>
 </div>
 
 <div class="wrapper collaborator-page">
-    <div id="collaboratorHomeBox" class="row collaborator-box">
+    <div id="collaboratorPage-box" class="row collaborator-box">
         <div class="collaborator-layout">
             <div class="collaborator-side">
                 <h3>Your Projects</h3>
 
-                <div id="assignedProjectsListEmpty" class="empty-message hidden">
+                <div id="assignedProjectsList-empty" class="empty-message hidden">
                     No assigned projects found.
                 </div>
 
-                <div id="assignedProjectsList" class="collaborator-project-tree hidden">
+                <div id="assignedProjectsList-list" class="collaborator-project-tree hidden">
                     <!-- Sample assigned project tree for JavaScript rendering.
                     <div class="collaborator-project-item">
                         <span class="collaborator-project-title">New Web Platform</span>
@@ -33,7 +36,7 @@
                             <span class="collaborator-wp-title">WP1 - Analysis and Design</span>
 
                             <div class="collaborator-task-list">
-                                <button id="taskLink101" type="button" class="collaborator-task-link active-task-link">T1.1 Requirements Collection</button>
+                                <button id="taskLink101" type="button" class="collaborator-task-link collaborator-active-task-link">T1.1 Requirements Collection</button>
                                 <button id="taskLink102" type="button" class="collaborator-task-link">T1.2 Technical Review</button>
                             </div>
                         </div>
@@ -49,14 +52,14 @@
                     -->
                 </div>
 
-                <div id="assignedProjectsListError" class="error-message hidden">Unable to load assigned projects.</div>
+                <div id="assignedProjectsList-error" class="error-message hidden">Unable to load assigned projects.</div>
             </div>
 
             <div class="collaborator-viewer">
                 <h3>Task Timesheet</h3>
 
-                <div id="collaboratorTimesheet" class="timesheet-panel hidden">
-                    <div id="collaboratorTimesheetHeader" class="task-header-info">
+                <div id="collaboratorTimesheet-box" class="collaborator-timesheet-panel hidden">
+                    <div id="collaboratorTimesheet-header" class="collaborator-task-header-info">
                         <!-- Sample timesheet header data for JavaScript rendering.
                         Task Timesheet: Requirements Collection
                         Project: New Web Platform
@@ -65,16 +68,16 @@
                         Total Expected Hours: 70
                         Your Total Worked Hours: 30
                         -->
-                        <h3 id="collaboratorTimesheetTitle">Task Timesheet</h3>
-                        <p><span class="info-label">Project:</span> <span id="collaboratorTimesheetProjectTitle"></span></p>
-                        <p><span class="info-label">Description:</span> <span id="collaboratorTimesheetTaskDescription"></span></p>
-                        <p><span class="info-label">Active Period:</span> <span id="collaboratorTimesheetTaskPeriod"></span></p>
-                        <p><span class="info-label">Total Expected Hours:</span> <span id="collaboratorTimesheetTotalExpectedHours"></span></p>
-                        <p><span class="info-label">Your Total Worked Hours:</span> <span id="collaboratorTimesheetTotalWorkedHours"></span></p>
+                        <h3 id="collaboratorTimesheet-title">Task Timesheet</h3>
+                        <p><span class="collaborator-info-label">Project:</span> <span id="collaboratorTimesheet-projectTitle"></span></p>
+                        <p><span class="collaborator-info-label">Description:</span> <span id="collaboratorTimesheet-taskDescription"></span></p>
+                        <p><span class="collaborator-info-label">Active Period:</span> <span id="collaboratorTimesheet-taskPeriod"></span></p>
+                        <p><span class="collaborator-info-label">Total Expected Hours:</span> <span id="collaboratorTimesheet-totalExpectedHours"></span></p>
+                        <p><span class="collaborator-info-label">Your Total Worked Hours:</span> <span id="collaboratorTimesheet-totalWorkedHours"></span></p>
                     </div>
 
-                    <div id="collaboratorTimesheetTableBox" class="report-table-scroll">
-                        <table id="collaboratorTimesheetTable" class="data-table collaborator-table">
+                    <div id="collaboratorTimesheet-tableBox" class="report-table-scroll">
+                        <table id="collaboratorTimesheet-table" class="data-table collaborator-table">
                             <thead>
                             <tr>
                                 <th>Month</th>
@@ -82,27 +85,27 @@
                                 <th>Your Worked Hours</th>
                             </tr>
                             </thead>
-                            <tbody id="collaboratorTimesheetTableBody">
+                            <tbody id="collaboratorTimesheet-tableBody">
                             <!-- Sample timesheet month rows for JavaScript rendering.
                             <tr>
                                 <td>M1</td>
                                 <td>20</td>
                                 <td>
-                                    <input class="worked-hours-input" type="number" name="workedHours_1" value="12" min="0" step="1">
+                                    <input class="collaborator-worked-hours-input" type="number" name="workedHours_1" value="12" min="0" step="1">
                                 </td>
                             </tr>
                             <tr>
                                 <td>M2</td>
                                 <td>35</td>
                                 <td>
-                                    <input class="worked-hours-input" type="number" name="workedHours_2" value="18" min="0" step="1">
+                                    <input class="collaborator-worked-hours-input" type="number" name="workedHours_2" value="18" min="0" step="1">
                                 </td>
                             </tr>
                             <tr>
                                 <td>M3</td>
                                 <td>15</td>
                                 <td>
-                                    <input class="worked-hours-input" type="number" name="workedHours_3" value="0" min="0" step="1">
+                                    <input class="collaborator-worked-hours-input" type="number" name="workedHours_3" value="0" min="0" step="1">
                                 </td>
                             </tr>
                             -->
@@ -110,8 +113,14 @@
                         </table>
                     </div>
 
-                    <div id="collaboratorTimesheetError" class="error-message hidden">Worked hours must be a non-negative integer.</div>
-                    <div id="collaboratorTimesheetSuccess" class="success-message hidden">Worked hours updated successfully.</div>
+                    <form id="collaboratorTimesheet-updateForm" autocomplete="off">
+                        <input id="collaboratorTimesheet-taskIdInput" type="hidden" name="taskId">
+                        <input id="collaboratorTimesheet-monthInput" type="hidden" name="month">
+                        <input id="collaboratorTimesheet-workedHoursInput" type="hidden" name="workedHours">
+                    </form>
+
+                    <div id="collaboratorTimesheet-error" class="error-message hidden">Worked hours must be a non-negative integer.</div>
+                    <div id="collaboratorTimesheet-success" class="success-message hidden">Worked hours updated successfully.</div>
                 </div>
             </div>
         </div>
