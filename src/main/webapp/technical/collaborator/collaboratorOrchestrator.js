@@ -123,6 +123,8 @@ function CollaboratorOrchestrator() {
 
     // the page is initialized after loading
     window.addEventListener("load", function() {
+        showStoredUserGreeting("collaboratorPage-greeting");
+
         collaboratorOrchestrator = new CollaboratorOrchestrator();
         collaboratorOrchestrator.start();
     }, false);

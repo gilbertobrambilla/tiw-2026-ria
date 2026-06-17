@@ -5,6 +5,8 @@
 
     // the page is initialized after loading
     window.addEventListener("load", function() {
+        showStoredUserGreeting("adminGreeting");
+
         createProjectStructureOrchestrator = new CreateProjectStructureOrchestrator(projectSaved);
         verifyProjectsOrchestrator = new VerifyProjectsOrchestrator();
 

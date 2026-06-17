@@ -35,3 +35,21 @@ function redirectToLogin(request) {
     sessionStorage.removeItem("lastName");
     window.location.href = request.getResponseHeader("Location");
 }
+
+function showStoredUserGreeting(greetingElementId) {
+    let greetingElement = document.getElementById(greetingElementId);
+    let firstName = sessionStorage.getItem("firstName");
+    let lastName = sessionStorage.getItem("lastName");
+
+    if (greetingElement === null || firstName === null || lastName === null) {
+        return;
+    }
+
+    firstName = firstName.trim();
+    lastName = lastName.trim();
+    if (firstName === "" || lastName === "") {
+        return;
+    }
+
+    greetingElement.textContent = "Welcome, " + firstName + " " + lastName;
+}

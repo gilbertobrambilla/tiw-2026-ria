@@ -75,6 +75,16 @@ function CreateProjectStructureOrchestrator(projectSavedCallback) {
 
     // a task move request is handled
     this.moveTask = function(sourceWPIndex, sourceTaskIndex, destinationWPIndex, destinationTaskIndex) {
+        let validationResult = state.validateTaskMove(sourceWPIndex, sourceTaskIndex, destinationWPIndex, destinationTaskIndex);
+
+        if (!validationResult.valid) {
+            view.hideMessages();
+            if (validationResult.errors.length > 0) {
+                view.showStructureError(validationResult.errors);
+            }
+            return;
+        }
+
         if (state.moveTask(sourceWPIndex, sourceTaskIndex, destinationWPIndex, destinationTaskIndex)) {
             view.hideMessages();
             refreshView();

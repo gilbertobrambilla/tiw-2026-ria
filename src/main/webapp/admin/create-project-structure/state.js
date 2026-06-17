@@ -211,40 +211,27 @@ function CreateProjectStructureState() {
 
     // a task is moved
     this.moveTask = function(sourceWPIndex, sourceTaskIndex, destinationWPIndex, destinationTaskIndex) {
-        let sourceWP;
-        let destinationWP;
-        let destinationIndex;
+        let validationResult;
         let task;
 
-        if (state.uiState.phase !== 2 ||
-            sourceWPIndex < 0 ||
-            sourceWPIndex >= state.projectData.workPackages.length ||
-            destinationWPIndex < 0 ||
-            destinationWPIndex >= state.projectData.workPackages.length) {
+        validationResult = validateTaskMove(sourceWPIndex, sourceTaskIndex, destinationWPIndex, destinationTaskIndex);
+        if (!validationResult.valid) {
             return false;
         }
 
-        sourceWP = state.projectData.workPackages[sourceWPIndex];
-        destinationWP = state.projectData.workPackages[destinationWPIndex];
-        if (sourceTaskIndex < 0 ||
-            sourceTaskIndex >= sourceWP.tasks.length ||
-            destinationTaskIndex < 0 ||
-            destinationTaskIndex > destinationWP.tasks.length) {
-            return false;
-        }
-
-        destinationIndex = destinationTaskIndex;
-        if (sourceWPIndex === destinationWPIndex && sourceTaskIndex < destinationTaskIndex) {
-            destinationIndex--;
-        }
-
-        if (sourceWPIndex === destinationWPIndex && sourceTaskIndex === destinationIndex) {
-            return false;
-        }
-
-        task = sourceWP.tasks.splice(sourceTaskIndex, 1)[0];
-        destinationWP.tasks.splice(destinationIndex, 0, task);
+        task = state.projectData.workPackages[sourceWPIndex].tasks.splice(sourceTaskIndex, 1)[0];
+        state.projectData.workPackages[destinationWPIndex].tasks.splice(validationResult.destinationIndex, 0, task);
         return saveSnapshot();
+    };
+
+    // a task move request is checked
+    this.validateTaskMove = function(sourceWPIndex, sourceTaskIndex, destinationWPIndex, destinationTaskIndex) {
+        let validationResult = validateTaskMove(sourceWPIndex, sourceTaskIndex, destinationWPIndex, destinationTaskIndex);
+
+        return {
+            valid: validationResult.valid,
+            errors: validationResult.errors
+        };
     };
 
     // a task field is updated
@@ -383,6 +370,62 @@ function CreateProjectStructureState() {
     // a positive integer is detected
     function isPositiveInteger(value) {
         return String(value).trim() !== "" && Number.isInteger(Number(value)) && Number(value) > 0;
+    }
+
+    // a task move request is validated
+    function validateTaskMove(sourceWPIndex, sourceTaskIndex, destinationWPIndex, destinationTaskIndex) {
+        let errors = [];
+        let validationResult = {
+            valid: false,
+            errors: errors,
+            destinationIndex: destinationTaskIndex
+        };
+        let sourceWP;
+        let destinationWP;
+        let destinationIndex;
+        let task;
+
+        if (state.uiState.phase !== 2 ||
+            sourceWPIndex < 0 ||
+            sourceWPIndex >= state.projectData.workPackages.length ||
+            destinationWPIndex < 0 ||
+            destinationWPIndex >= state.projectData.workPackages.length) {
+            return validationResult;
+        }
+
+        sourceWP = state.projectData.workPackages[sourceWPIndex];
+        destinationWP = state.projectData.workPackages[destinationWPIndex];
+        if (sourceTaskIndex < 0 ||
+            sourceTaskIndex >= sourceWP.tasks.length ||
+            destinationTaskIndex < 0 ||
+            destinationTaskIndex > destinationWP.tasks.length) {
+            return validationResult;
+        }
+
+        destinationIndex = destinationTaskIndex;
+        if (sourceWPIndex === destinationWPIndex && sourceTaskIndex < destinationTaskIndex) {
+            destinationIndex--;
+        }
+
+        if (sourceWPIndex === destinationWPIndex && sourceTaskIndex === destinationIndex) {
+            return validationResult;
+        }
+
+        task = sourceWP.tasks[sourceTaskIndex];
+        if (!isTaskContainedInWP(task, destinationWP)) {
+            errors.push("Task duration must be contained in destination WP duration");
+            return validationResult;
+        }
+
+        validationResult.valid = true;
+        validationResult.destinationIndex = destinationIndex;
+        return validationResult;
+    }
+
+    // a task duration containment is checked
+    function isTaskContainedInWP(task, wp) {
+        return Number(task.startMonth) >= Number(wp.startMonth) &&
+            Number(task.endMonth) <= Number(wp.endMonth);
     }
 
     this.reset();
